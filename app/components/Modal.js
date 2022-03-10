@@ -23,7 +23,7 @@ export default function Modal({
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1}}>
-        <Text style={{color:'#29357C', fontSize: 50, marginBottom: 30, fontWeight: '400'}}>Welcome back, {`${name}`}!</Text>
+        <Text style={{color: status ? '#29357C' : '#FE0000', fontSize: 50, marginBottom: 30, fontWeight: '400'}}>{status ? 'Welcome back,' : 'Have a good day,'} {`${name}`}!</Text>
         <ImageBackground source={status ? blueLines : redLines} style={{height: 350, width: 600, backgroundColor: '#FFF', borderRadius: 25}}>
           <View style={{flexDirection: 'row', padding: 20, justifyContent: 'space-between'}}>
             <View style={{width: 120}}>
@@ -37,7 +37,7 @@ export default function Modal({
             </View>
           </View>
           <Text style={{color:'#707070', fontSize: 35, marginBottom: 5, textAlign: 'center'}}>{fullName}</Text>
-          <Text style={{color:'#29357C', fontSize: 25, textAlign: 'center'}}>{section}</Text>
+          <Text style={{color: status ? '#29357C' : '#FE0000', fontSize: 25, textAlign: 'center'}}>{section}</Text>
           <View style={{backgroundColor: status ? '#29357C' : '#FE0000', margin: 10, height: 45, borderRadius: 25, justifyContent: 'center'}}>
             <Text style={{color:'#FFF', fontSize: 20, textAlign: 'center'}}>Time in: {`${time}`}</Text>
           </View>

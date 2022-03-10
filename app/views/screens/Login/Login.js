@@ -55,13 +55,13 @@ export default function Login() {
 				<View style={{flex: 1,backgroundColor: '#FFF', margin: 30, padding: 6, borderRadius: 10}}>
           <View style={{flex: 1,backgroundColor: '#FFF', borderRadius: 10}}>
             <View style={{flex: 1, zIndex: 2, backgroundColor: '#FFF',flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 50, alignItems: 'center', maxHeight: 120}}>
-              <Text style={{color: '#29357C', fontSize: 40}}>FEB 14</Text>
+              <Text style={{color: '#707070', fontSize: 40}}>FEB 14</Text>
               <View style={{left: '50%', position: 'absolute', width: 100}}>
                 <View style={{height: 170, width: 170, borderRadius: 85, justifyContent: 'center', alignSelf: 'center', alignItems: 'center', backgroundColor: '#FFF'}}>
                   <Image source={sbuLogo} resizeMode='contain' style={{height: 140, width: 140, borderRadius: 70, alignSelf: 'center' }} />
                 </View>
               </View>
-              <Text style={{color: '#29357C', fontSize: 40}}>11:23 AM</Text>
+              <Text style={{color: '#707070', fontSize: 40}}>11:23 AM</Text>
             </View>
             <LinearGradient colors={['#f0f0f0', '#e7e8ea', '#5d6598']} style={{alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: '#000000ae', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
             {showCamera ? 
@@ -72,8 +72,8 @@ export default function Login() {
               :
               <View style={{backgroundColor: 'transparent', width: '100%', height: '100%', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
                 <ImageBackground source={group} resizeMode='stretch' style={{alignItems: 'center', justifyContent: 'flex-end', flex: 1, paddingBottom: 40}}>
-                  <Text style={{textAlign: 'center', fontSize: 30, color: '#FFFFFF', paddingTop: 10}}>SCAN THE ID</Text> 
-                  <Text style={{textAlign: 'center', fontSize: 25, color: '#FFFFFF', paddingTop: 10}}>Bring the ID closer to the camera to scan</Text>
+                  {/* <Text style={{textAlign: 'center', fontSize: 30, color: '#FFFFFF', paddingTop: 10}}>SCAN THE ID</Text> 
+                  <Text style={{textAlign: 'center', fontSize: 25, color: '#FFFFFF', paddingTop: 10}}>Bring the ID closer to the camera to scan</Text> */}
                 </ImageBackground>
               </View>
               }
@@ -87,28 +87,76 @@ export default function Login() {
           </View>
           <View style={{marginHorizontal: 30, marginBottom: 10}}>
             <Text style={{color: '#707070', fontSize: 20, marginBottom: 10 }}>Time in</Text>
-            <ScrollView style={{maxHeight: 200}} showsVerticalScrollIndicator={false}>
-              <Items />
-              <Items />
-              <Items />
-              <Items />
-              <Items />
-              <Items />
+          <ScrollView style={{maxHeight: 200}} showsVerticalScrollIndicator={false}>
+            <Items 
+                login={true} 
+                name={'Carlos Alfonso Iñigo'}
+                time={'9:00 AM'}
+              />
+              <Items 
+                login={true} 
+                name={'Michael Ben Gabriel'}
+                time={'6:58 AM'}
+              />
+              <Items 
+                login={true} 
+                name={'Jesus Paolo Montero'}
+                time={'7:10 AM'}
+              />
+              <Items 
+                login={true} 
+                name={'Vhon Lopez'}
+                time={'8:10 AM'}
+              />
+              <Items 
+                login={true} 
+                name={'Laurence Bautista'}
+                time={'7:00 AM'}
+              />
+              <Items 
+                login={true} 
+                name={'Leo Ferrer'}
+                time={'7:02 AM'}
+              />
             </ScrollView>
           </View>
           <View style={{marginHorizontal: 30, marginBottom: 50}}>
-            <Text style={{color: '#707070', fontSize: 20, marginBottom: 10 }}>Time out</Text>
+            <Text style={{color: '#FE0000', fontSize: 20, marginBottom: 10 }}>Time out</Text>
             <ScrollView style={{maxHeight: 200}} showsVerticalScrollIndicator={false}>
-              <Items />
-              <Items />
-              <Items />
-              <Items />
-              <Items />
-              <Items />
+              <Items 
+                login={false} 
+                name={'Carlos Alfonso Iñigo'}
+                time={'5:00 PM'}
+              />
+              <Items 
+                login={false} 
+                name={'Michael Ben Gabriel'}
+                time={'5:40 PM'}
+              />
+              <Items 
+                login={false} 
+                name={'Jesus Paolo Montero'}
+                time={'5:10 PM'}
+              />
+              <Items 
+                login={false} 
+                name={'Vhon Lopez'}
+                time={'4:00 PM'}
+              />
+              <Items 
+                login={false} 
+                name={'Laurence Bautista'}
+                time={'5:22 PM'}
+              />
+              <Items 
+                login={false} 
+                name={'Leo Ferrer'}
+                time={'5:02 PM'}
+              />
             </ScrollView>
           </View>
 				</View>
-      <Modal
+      {/* <Modal
           transparent={true}
           animationType="slide"
           visible={showModal}
@@ -122,14 +170,14 @@ export default function Login() {
             }}>
             <PopUpModal
               closeModal={() => setShowModal(false)}
-              status={true}
+              status={false}
               fullName={'Carlos Alfonso Iñigo'}
               name={'Carlos'}
               section={'Grade 1 - Faith'}
               time={'February 22, 2022 - 07:30 AM'}
             />
           </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 }
