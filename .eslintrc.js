@@ -1,4 +1,7 @@
 module.exports = {
-  root: true,
-  extends: '@react-native-community',
+  extends: ['plugin:react/recommended'],
+  parser: 'babel-eslint',
+  rules: {
+    'react/prop-types': 'off',
+  },
 };

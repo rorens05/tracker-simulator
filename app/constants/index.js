@@ -1,1 +1,1 @@
-export const DEV_API_URL = 'https://api-parentline.tekteachlms.com/'
+export const DEV_API_URL = 'http://10.0.2.2:3000/';
