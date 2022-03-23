@@ -34,7 +34,7 @@ export default function SplashScreen() {
   };
 
   useEffect(() => {
-    setTimeout(() => init(), 2000);
+    init();
   }, []);
 
   useEffect(() => {
