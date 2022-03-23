@@ -13,33 +13,35 @@ import blueLines from './../images/lines-blue.png';
 import redLines from './../images/lines-red.png';
 import blueUser from './../images/user-icon-blue.png';
 import redUser from './../images/user-icon-red.png';
+import {DEV_API_URL} from '../constants';
 const {width, height} = Dimensions.get('screen');
 
-export default function PopupModal({
-  status,
-  fullName,
-  name,
-  time,
-  section,
-  closeModal = () => {},
-}) {
-  const handleClose = () => {
-    closeModal();
-  };
-
+export default function PopupModal({selectedStudent, closeModal}) {
+  const isTimeIn =
+    selectedStudent?.venue_attendance.attendance_status == 'time_in';
+  const color = isTimeIn ? '#29357C' : '#FE0000';
+  const statusType = isTimeIn ? 'Time in: ' : 'Time out: ';
+  const imagePlaceholder = isTimeIn ? blueUser : redUser;
+  const image = selectedStudent?.student.image_path
+    ? {uri: DEV_API_URL + selectedStudent.student.image_path}
+    : imagePlaceholder;
   return (
-    <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+      }}>
       <Text
         style={{
-          color: status ? '#29357C' : '#FE0000',
+          color: color,
           fontSize: 50,
-          marginBottom: 30,
           fontWeight: '400',
         }}>
-        {status ? 'Welcome back,' : 'Have a good day,'} {`${name}`}!
+        {true ? 'Welcome back,' : 'Have a good day,'} {`${'name'}`}!
       </Text>
       <ImageBackground
-        source={status ? blueLines : redLines}
+        source={true ? blueLines : redLines}
         style={{
           height: 350,
           width: 600,
@@ -59,9 +61,9 @@ export default function PopupModal({
               style={{width: 70, height: 70, borderRadius: 35}}
             />
           </View>
-          <View style={{height: 160, justifyContent: 'flex-end'}}>
+          <View style={{marginTop: 8}}>
             <Image
-              source={status ? blueUser : redUser}
+              source={image}
               resizeMode="contain"
               style={{width: 110, height: 110}}
             />
@@ -78,31 +80,57 @@ export default function PopupModal({
           style={{
             color: '#707070',
             fontSize: 35,
-            marginBottom: 5,
             textAlign: 'center',
           }}>
-          {fullName}
+          {`${selectedStudent?.student?.user?.first_name} ${selectedStudent?.student?.user?.last_name}`}
         </Text>
         <Text
           style={{
-            color: status ? '#29357C' : '#FE0000',
+            color: color,
             fontSize: 25,
             textAlign: 'center',
           }}>
-          {section}
+          {selectedStudent?.student?.student_no}
         </Text>
         <View
           style={{
-            backgroundColor: status ? '#29357C' : '#FE0000',
+            backgroundColor: color,
             margin: 10,
+            marginTop: 5,
             height: 45,
             borderRadius: 25,
             justifyContent: 'center',
           }}>
           <Text style={{color: '#FFF', fontSize: 20, textAlign: 'center'}}>
-            Time in: {`${time}`}
+            {`${statusType} ${new Date(
+              selectedStudent?.venue_attendance?.created_at,
+            ).toDateString()}, ${new Date(
+              selectedStudent?.venue_attendance?.created_at,
+            ).toLocaleTimeString()}`}
           </Text>
         </View>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={closeModal}
+          style={{
+            justifyContent: 'center',
+            width: '100%',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'gray',
+              margin: 0,
+              width: 200,
+              borderRadius: 25,
+              justifyContent: 'center',
+              paddingVertical: 4,
+            }}>
+            <Text style={{color: '#FFF', fontSize: 20, textAlign: 'center'}}>
+              CLOSE
+            </Text>
+          </View>
+        </TouchableOpacity>
       </ImageBackground>
     </View>
   );
