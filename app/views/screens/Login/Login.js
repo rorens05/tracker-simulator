@@ -11,15 +11,15 @@ const {width, height} = Dimensions.get('screen');
 export default function Login() {
   const userContext = useContext(UserContext);
   const {user, refreshDevice} = userContext.data;
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [qrCode, setQrCode] = useState('611ee71bd1ee64cfa844');
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const recordAttendance = async () => {
+  const recordAttendance = async qr_token => {
     setLoading(true);
     let response = await new AttendanceAPI().recordAttendance(user.code, {
-      qr_token: qrCode,
+      qr_token,
     });
     if (response.ok) {
       setSelectedStudent(response.data);
@@ -33,6 +33,10 @@ export default function Login() {
     setLoading(false);
   };
 
+  const onQRScanned = e => {
+    recordAttendance(e.data);
+  };
+
   return (
     <View
       style={{
@@ -43,10 +47,7 @@ export default function Login() {
         flexDirection: 'row',
       }}>
       {loading && <Loader />}
-      <TouchableOpacity onPress={recordAttendance}>
-        <Text>Simulate</Text>
-      </TouchableOpacity>
-      <DashboardView showModal={setShowModal} />
+      <DashboardView showModal={setShowModal} onQRScanned={onQRScanned} />
       <DeviceProfile />
 
       <Modal

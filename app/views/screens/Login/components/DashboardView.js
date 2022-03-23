@@ -1,19 +1,15 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import sbuLogo from './../../../../images/sbu-logo.png';
 import cameraIcon from './../../../../images/camera.png';
 import group from './../../../../images/group.png';
 import {UserContext} from '../../../../context/UserContext';
 import {DEV_API_URL} from '../../../../constants';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import {RNCamera} from 'react-native-camera';
 
-export default function DashboardView({showModal}) {
+export default function DashboardView({showModal, onQRScanned}) {
   const [showCamera, setShowCamera] = useState(false);
   const [tick, setTick] = useState(1);
 
@@ -24,7 +20,7 @@ export default function DashboardView({showModal}) {
     if (showCamera) {
       setTimeout(() => {
         setShowCamera(false);
-      }, 10000);
+      }, 100000);
     }
   }, [showCamera]);
 
@@ -159,18 +155,18 @@ export default function DashboardView({showModal}) {
                 borderBottomLeftRadius: 10,
                 borderBottomRightRadius: 10,
               }}>
-              <ImageBackground
-                source={group}
-                resizeMode="stretch"
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  flex: 1,
-                  paddingBottom: 40,
-                }}>
-                {/* <Text style={{textAlign: 'center', fontSize: 30, color: '#FFFFFF', paddingTop: 10}}>SCAN THE ID</Text> 
-                  <Text style={{textAlign: 'center', fontSize: 25, color: '#FFFFFF', paddingTop: 10}}>Bring the ID closer to the camera to scan</Text> */}
-              </ImageBackground>
+              <QRCodeScanner
+                cameraStyle={{width: '100%', height: '100%'}}
+                containerStyle={{
+                  overflow: 'hidden',
+                  backgroundColor: 'blue',
+                  width: '100%',
+                  height: 100,
+                }}
+                cameraType="front"
+                onRead={e => onQRScanned(e)}
+                flashMode={RNCamera.Constants.FlashMode.torch}
+              />
             </View>
           )}
         </LinearGradient>
@@ -178,3 +174,23 @@ export default function DashboardView({showModal}) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  centerText: {
+    flex: 1,
+    fontSize: 18,
+    padding: 32,
+    color: '#777',
+  },
+  textBold: {
+    fontWeight: '500',
+    color: '#000',
+  },
+  buttonText: {
+    fontSize: 21,
+    color: 'rgb(0,122,255)',
+  },
+  buttonTouchable: {
+    padding: 16,
+  },
+});
