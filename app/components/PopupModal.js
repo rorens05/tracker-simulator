@@ -38,10 +38,10 @@ export default function PopupModal({selectedStudent, closeModal}) {
           fontSize: 50,
           fontWeight: '400',
         }}>
-        {true ? 'Welcome back,' : 'Have a good day,'} {`${'name'}`}!
+        {statusType ? 'Welcome back,' : 'Have a good day,'} {`${selectedStudent?.student?.user?.first_name}`}!
       </Text>
       <ImageBackground
-        source={true ? blueLines : redLines}
+        source={statusType ? blueLines : redLines}
         style={{
           height: 350,
           width: 600,

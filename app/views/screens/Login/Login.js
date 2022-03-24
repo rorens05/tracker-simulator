@@ -42,8 +42,6 @@ export default function Login() {
       style={{
         flex: 1,
         backgroundColor: '#F0F0F0',
-        width: width,
-        height: height,
         flexDirection: 'row',
       }}>
       {loading && <Loader />}
