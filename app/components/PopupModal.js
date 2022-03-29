@@ -38,7 +38,7 @@ export default function PopupModal({selectedStudent, closeModal}) {
           fontSize: 50,
           fontWeight: '400',
         }}>
-        {statusType ? 'Welcome back,' : 'Have a good day,'} {`${selectedStudent?.student?.user?.first_name}`}!
+        {isTimeIn ? 'Welcome back,' : 'Have a good day,'} {`${selectedStudent?.student?.user?.first_name}`}!
       </Text>
       <ImageBackground
         source={statusType ? blueLines : redLines}

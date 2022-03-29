@@ -159,7 +159,7 @@ export default function DashboardView({showModal, onQRScanned}) {
                 cameraStyle={{width: '100%', height: '100%'}}
                 containerStyle={{
                   overflow: 'hidden',
-                  backgroundColor: 'blue',
+                  backgroundColor: 'transparent',
                   width: '100%',
                   height: 100,
                 }}

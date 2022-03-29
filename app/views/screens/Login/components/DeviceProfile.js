@@ -67,7 +67,7 @@ export default function DeviceProfile() {
             <Items key={index} item={item} />
           ))}
           {timeOuts.length == 0 && (
-            <Text>Time in records today will appear here..</Text>
+            <Text>Time out records today will appear here..</Text>
           )}
         </ScrollView>
       </View>
