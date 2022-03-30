@@ -16,7 +16,7 @@ import redUser from './../images/user-icon-red.png';
 import {DEV_API_URL} from '../constants';
 const {width, height} = Dimensions.get('screen');
 
-export default function PopupModal({selectedStudent, closeModal}) {
+export default function PopupModal({selectedStudent, user, closeModal}) {
   if (selectedStudent == null) return <View />;
   const isTimeIn =
     selectedStudent?.venue_attendance.attendance_status == 'time_in';
@@ -63,11 +63,19 @@ export default function PopupModal({selectedStudent, closeModal}) {
             justifyContent: 'space-between',
           }}>
           <View style={{width: 120}}>
-            <Image
-              source={sbuLogo}
-              resizeMode="contain"
-              style={{width: 70, height: 70, borderRadius: 35}}
-            />
+            {user?.venue?.school?.logo_path ? (
+                <Image
+                  source={{uri: DEV_API_URL + user?.venue?.school?.logo_path}}
+                  resizeMode="contain"
+                  style={{width: 70, height: 70, borderRadius: 35}}
+                />
+              ) : (
+                <Image
+                  source={sbuLogo}
+                  resizeMode="contain"
+                  style={{width: 70, height: 70, borderRadius: 35}}
+                />
+              )}
           </View>
           <View style={{marginTop: 24}}>
             <Image
@@ -98,7 +106,7 @@ export default function PopupModal({selectedStudent, closeModal}) {
               color: color,
               fontWeight: '400',
             }}>
-            {isTimeIn ? 'Welcome back' : 'Have a good day'}{' '}
+            {isTimeIn ? 'Welcome back!' : 'Have a good day!'}{' '}
           </Text>
           <Text
             style={{

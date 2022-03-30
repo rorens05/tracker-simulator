@@ -10,12 +10,13 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 import PopupModal from '../../../../components/PopupModal';
 
-export default function DashboardView({selectedStudent, onQRScanned}) {
+export default function DashboardView({selectedStudent, onQRScanned, message}) {
   const [showCamera, setShowCamera] = useState(false);
   const [tick, setTick] = useState(1);
   const [currentDate, setCurrentDate] = useState(new Date());
   const userContext = useContext(UserContext);
   const {user} = userContext.data;
+
 
   const scanCount = useRef(0);
 
@@ -129,6 +130,7 @@ export default function DashboardView({selectedStudent, onQRScanned}) {
             position: 'relative',
           }}>
           <PopupModal
+            user={user}
             // closeModal={() => setShowModal(false)}
             selectedStudent={selectedStudent}
           />
@@ -183,6 +185,7 @@ export default function DashboardView({selectedStudent, onQRScanned}) {
             </View>
           )}
         </LinearGradient>
+        {message && selectedStudent == null && (<Text style={{color: 'red', textAlign: 'center', paddingVertical: 8, fontWeight: 'bold'}}>{message}</Text>)}
       </View>
     </View>
   );

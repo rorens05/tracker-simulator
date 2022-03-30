@@ -20,6 +20,7 @@ export default function Login() {
   const lastStudent = useRef(null);
   const lastQrToken = useRef(null);
   const lastTime = useRef(new Date());
+  const [message, setMessage] = useState(null);
 
   const isStudentDuplicated = qr_token => {
     if (
@@ -27,11 +28,13 @@ export default function Login() {
       getDifferenceInSecondsBetweenTwoDates(lastTime.current, new Date()) < 10
     ) {
       setLoading(false);
+      setMessage("You have already scanned your QR Code.")
       return true;
     }
   };
 
   const recordAttendance = async qr_token => {
+    setMessage(null);
     setLoading(true);
     if (isStudentDuplicated(qr_token)) return;
     let response = await new AttendanceAPI().recordAttendance(user.code, {
@@ -46,7 +49,7 @@ export default function Login() {
       closeStudentView(response.data);
       setShowModal(true);
     } else {
-      alert('Something went wrong while recording attendance');
+      setMessage("QR Code not Recognized. Please try again.")
     }
     setLoading(false);
   };
@@ -65,6 +68,14 @@ export default function Login() {
     setShowCamera(true);
   };
 
+  useEffect(() => {
+    if (message != null){
+      setTimeout(() => {
+        setMessage(null);
+      }, 10000);
+    }
+  }, [message]);
+
   return (
     <View
       style={{
@@ -76,6 +87,7 @@ export default function Login() {
       <DashboardView
         onQRScanned={onQRScanned}
         selectedStudent={selectedStudent}
+        message={message}
       />
       <DeviceProfile />
     </View>
