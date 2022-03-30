@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState, useContext, useRef} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import sbuLogo from './../../../../images/sbu-logo.png';
@@ -8,25 +8,33 @@ import {UserContext} from '../../../../context/UserContext';
 import {DEV_API_URL} from '../../../../constants';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
+import PopupModal from '../../../../components/PopupModal';
 
-export default function DashboardView({showModal, onQRScanned}) {
+export default function DashboardView({selectedStudent, onQRScanned}) {
   const [showCamera, setShowCamera] = useState(false);
   const [tick, setTick] = useState(1);
-
+  const [currentDate, setCurrentDate] = useState(new Date());
   const userContext = useContext(UserContext);
   const {user} = userContext.data;
 
-  useEffect(() => {
-    if (showCamera) {
-      setTimeout(() => {
+  const scanCount = useRef(0);
+
+  const handleScan = e => {
+    scanCount.current = scanCount.current + 1;
+    const tempCount = scanCount.current;
+    setShowCamera(false);
+    setTimeout(() => {
+      if (scanCount.current === tempCount) {
         setShowCamera(false);
-      }, 100000);
-    }
-  }, [showCamera]);
+      }
+    }, 15000);
+    onQRScanned(e, setShowCamera);
+  };
 
   useEffect(() => {
     setTimeout(() => {
       setTick(prev => prev + 1);
+      setCurrentDate(new Date());
     }, 1000);
   }, [tick]);
 
@@ -57,7 +65,7 @@ export default function DashboardView({showModal, onQRScanned}) {
               color: '#707070',
               fontSize: 25,
             }}>
-            {tick > 0 && new Date().toDateString().slice(4)}
+            {currentDate.toDateString().slice(4)}
           </Text>
           <View
             style={{
@@ -105,7 +113,7 @@ export default function DashboardView({showModal, onQRScanned}) {
               color: '#707070',
               fontSize: 25,
             }}>
-            {tick > 0 && new Date().toLocaleTimeString()}
+            {currentDate.toLocaleTimeString()}
           </Text>
         </View>
 
@@ -118,7 +126,12 @@ export default function DashboardView({showModal, onQRScanned}) {
             backgroundColor: '#000000ae',
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
+            position: 'relative',
           }}>
+          <PopupModal
+            // closeModal={() => setShowModal(false)}
+            selectedStudent={selectedStudent}
+          />
           {!showCamera ? (
             <TouchableOpacity
               activeOpacity={0.9}
@@ -164,7 +177,7 @@ export default function DashboardView({showModal, onQRScanned}) {
                   height: 100,
                 }}
                 cameraType="front"
-                onRead={e => onQRScanned(e)}
+                onRead={handleScan}
                 flashMode={RNCamera.Constants.FlashMode.torch}
               />
             </View>

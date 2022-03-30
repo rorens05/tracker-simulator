@@ -1,14 +1,24 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, Text, TouchableWithoutFeedback, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {NavigationContext} from '@react-navigation/native';
 import CodeValidationAPI from '../../../api/CodeValidationAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
+import {getModel} from 'react-native-device-info';
+import {UserContext} from '../../../context/UserContext';
 const {width, height} = Dimensions.get('screen');
 export default function Description() {
   const navigation = useContext(NavigationContext);
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState('');
+  const userContext = useContext(UserContext);
+  const {setUser, user} = userContext.data;
 
   const init = async () => {
     const code = (await AsyncStorage.getItem('code')) || '';
@@ -23,6 +33,23 @@ export default function Description() {
     }
     setLoading(false);
   };
+
+  const validateCode = async () => {
+    const model = await getModel();
+    const code = await AsyncStorage.getItem('code');
+    if (code) {
+      let response = await new CodeValidationAPI().validateCode(code, model);
+      if (response.ok) {
+        await setUser(response.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (user != null) {
+      navigation.replace('Login');
+    }
+  }, [user]);
 
   useEffect(() => {
     init();
@@ -60,15 +87,9 @@ export default function Description() {
             }}>
             {code}
           </Text>
-          <Text style={{color: '#B9B9B9', fontSize: 20}}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
+          <TouchableOpacity style={{marginBottom: 12}} onPress={validateCode}>
+            <Text style={{color: 'blue', fontSize: 18}}>Reload</Text>
+          </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
     </View>

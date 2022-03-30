@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {View, Dimensions, Modal, Text, TouchableOpacity} from 'react-native';
 import {NavigationContext} from '@react-navigation/native';
 import {UserContext} from './../../../context/UserContext';
@@ -7,34 +7,62 @@ import DeviceProfile from './components/DeviceProfile';
 import DashboardView from './components/DashboardView';
 import AttendanceAPI from '../../../api/AttendanceAPI';
 import Loader from '../../../components/Loader';
+import {getDifferenceInSecondsBetweenTwoDates} from '../../../lib/dateUtils';
+
 const {width, height} = Dimensions.get('screen');
 export default function Login() {
   const userContext = useContext(UserContext);
   const {user, refreshDevice} = userContext.data;
   const [showModal, setShowModal] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [qrCode, setQrCode] = useState('611ee71bd1ee64cfa844');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const lastStudent = useRef(null);
+  const lastQrToken = useRef(null);
+  const lastTime = useRef(new Date());
+
+  const isStudentDuplicated = qr_token => {
+    if (
+      qr_token == lastQrToken.current &&
+      getDifferenceInSecondsBetweenTwoDates(lastTime.current, new Date()) < 10
+    ) {
+      setLoading(false);
+      return true;
+    }
+  };
+
   const recordAttendance = async qr_token => {
     setLoading(true);
+    if (isStudentDuplicated(qr_token)) return;
     let response = await new AttendanceAPI().recordAttendance(user.code, {
       qr_token,
     });
     if (response.ok) {
-      setSelectedStudent(response.data);
-      setShowModal(true);
       refreshDevice();
+      setSelectedStudent(response.data);
+      lastStudent.current = response.data;
+      lastTime.current = new Date();
+      lastQrToken.current = qr_token;
+      closeStudentView(response.data);
+      setShowModal(true);
     } else {
       alert('Something went wrong while recording attendance');
     }
-    console.log({response});
-
     setLoading(false);
   };
 
-  const onQRScanned = e => {
-    recordAttendance(e.data);
+  const closeStudentView = student => {
+    setTimeout(() => {
+      console.log({student, lastStudent});
+      if (student?.student?.id == lastStudent.current.student?.id) {
+        setSelectedStudent(null);
+      }
+    }, 5000);
+  };
+
+  const onQRScanned = async (e, setShowCamera) => {
+    await recordAttendance(e.data);
+    setShowCamera(true);
   };
 
   return (
@@ -45,26 +73,11 @@ export default function Login() {
         flexDirection: 'row',
       }}>
       {loading && <Loader />}
-      <DashboardView showModal={setShowModal} onQRScanned={onQRScanned} />
+      <DashboardView
+        onQRScanned={onQRScanned}
+        selectedStudent={selectedStudent}
+      />
       <DeviceProfile />
-
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={showModal}
-        onBackdropPress={() => setShowModal(false)}
-        onRequestClose={() => setShowModal(false)}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: '#e0e0e0cc',
-          }}>
-          <PopupModal
-            closeModal={() => setShowModal(false)}
-            selectedStudent={selectedStudent}
-          />
-        </View>
-      </Modal>
     </View>
   );
 }

@@ -11,7 +11,6 @@ import {UserContext} from '../../../context/UserContext';
 export default function SplashScreen() {
   const navigation = useContext(NavigationContext);
   const userContext = useContext(UserContext);
-  console.log({userContext});
   const {setUser, user} = userContext.data;
   const init = async () => {
     const model = await getModel();
