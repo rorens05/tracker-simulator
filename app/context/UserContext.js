@@ -1,7 +1,7 @@
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
-// import {API_URL} from '../api/Base';
-import Auth from '../api/Auth';
+import {getModel} from 'react-native-device-info';
+import CodeValidationAPI from '../api/CodeValidationAPI';
 export const UserContext = React.createContext();
 
 export class UserContextProvider extends Component {
@@ -13,23 +13,27 @@ export class UserContextProvider extends Component {
     };
   }
 
-  componentDidMount = () => {};
-
   setUser = user => {
     this.setState({user});
   };
 
-  refreshUser = async () => {
-    console.log('Refreshing user');
-    await this.setState({loading: true});
-    let response = await new Auth().profile();
-    if (response.ok) {
-      await this.setState({user: response.data});
+  refreshDevice = async () => {
+    const model = await getModel();
+    const code = await AsyncStorage.getItem('code');
+    if (code) {
+      let response = await new CodeValidationAPI().validateCode(code, model);
+      if (response.ok) {
+        await this.setUser(response.data);
+      } else {
+        if (response.status === 404) {
+          alert(response.data.message);
+        } else {
+          alert('Something went wrong while validating the code');
+        }
+      }
     } else {
-      await this.setState({user: null});
+      navigation.replace('Description');
     }
-    await this.setState({loading: false});
-    return response;
   };
 
   render() {
@@ -41,7 +45,7 @@ export class UserContextProvider extends Component {
           data: {
             user: user,
             setUser: this.setUser,
-            refreshUser: this.refreshUser,
+            refreshDevice: this.refreshDevice,
           },
         }}>
         {children}
